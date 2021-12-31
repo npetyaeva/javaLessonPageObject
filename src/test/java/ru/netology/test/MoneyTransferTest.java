@@ -66,7 +66,6 @@ public class MoneyTransferTest {
     @Test
     void shouldCheckIfFieldCardFromEmpty() {
         var firstCardInfo = getFirstCardInfo();
-        var secondCardInfo = getSecondCardInfo();
         var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
         var text = transferPage.cardEmptyTransfer("1500");
         assertEquals("Ошибка! Произошла ошибка", text);
