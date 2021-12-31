@@ -76,9 +76,8 @@ public class MoneyTransferTest {
     void shouldCheckIfFieldCardInvalid() {
         var firstCardInfo = getFirstCardInfo();
         var secondCardInfo = getInvalidCardInfo();
-        int amount = 1500;
         var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
-        var text = transferPage.cardInvalidTransfer(String.valueOf(amount), secondCardInfo);
+        var text = transferPage.cardInvalidTransfer("1500", secondCardInfo);
         assertEquals("Ошибка! Произошла ошибка", text);
     }
 }
