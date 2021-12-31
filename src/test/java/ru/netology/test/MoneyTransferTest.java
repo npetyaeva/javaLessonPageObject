@@ -7,14 +7,14 @@ import ru.netology.data.DataHelper;
 import ru.netology.page.DashboardPage;
 import ru.netology.page.LoginPage;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.netology.data.DataHelper.*;
 
 public class MoneyTransferTest {
     private DashboardPage dashboardPage;
 
     @BeforeEach
     void setUp() {
-
         Selenide.open("http://localhost:9999/");
         var clientInfo = DataHelper.getClientInfo();
         var loginPage = new LoginPage();
@@ -24,30 +24,61 @@ public class MoneyTransferTest {
     }
 
     @Test
-    void shouldTransferMoneyFromFirstToSecondCards() {
-        assertTrue(dashboardPage.cashIn(1500, 1, 2));
+    void shouldTransferMoneyFromFirstToSecondCard() {
+        var firstCardInfo = getFirstCardInfo();
+        var secondCardInfo = getSecondCardInfo();
+        int amount = 1500;
+        var expectedBalanceFirstCard = dashboardPage.getCardBalance(firstCardInfo) - amount;
+        var expectedBalanceSecondCard = dashboardPage.getCardBalance(secondCardInfo) + amount;
+        var transferPage = dashboardPage.selectCardToTransfer(secondCardInfo);
+        dashboardPage = transferPage.makeTransfer(String.valueOf(amount), firstCardInfo);
+        var actualBalanceFirstCard = dashboardPage.getCardBalance(firstCardInfo);
+        var actualBalanceSecondCard = dashboardPage.getCardBalance(secondCardInfo);
+        assertEquals(expectedBalanceFirstCard, actualBalanceFirstCard);
+        assertEquals(expectedBalanceSecondCard, actualBalanceSecondCard);
     }
 
     @Test
     void shouldTransferMoneyFromSecondToFirstCards() {
-        assertTrue(dashboardPage.cashIn(1500, 2, 1));
+        var firstCardInfo = getFirstCardInfo();
+        var secondCardInfo = getSecondCardInfo();
+        int amount = 1500;
+        var expectedBalanceFirstCard = dashboardPage.getCardBalance(firstCardInfo) + amount;
+        var expectedBalanceSecondCard = dashboardPage.getCardBalance(secondCardInfo) - amount;
+        var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
+        dashboardPage = transferPage.makeTransfer(String.valueOf(amount), secondCardInfo);
+        var actualBalanceFirstCard = dashboardPage.getCardBalance(firstCardInfo);
+        var actualBalanceSecondCard = dashboardPage.getCardBalance(secondCardInfo);
+        assertEquals(expectedBalanceFirstCard, actualBalanceFirstCard);
+        assertEquals(expectedBalanceSecondCard, actualBalanceSecondCard);
     }
 
     @Test
     void shouldCheckIfFieldAmountEmpty() {
-        var text = dashboardPage.fieldAmountEmpty(1, 2);
-        assertTrue("Ваши карты".contains(text));
+        var firstCardInfo = getFirstCardInfo();
+        var secondCardInfo = getSecondCardInfo();
+        var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
+        var dashboardPage = transferPage.amountEmptyTransfer(secondCardInfo);
+        var text = dashboardPage.getHeader();
+        assertEquals("Ваши карты", text);
     }
 
     @Test
     void shouldCheckIfFieldCardFromEmpty() {
-        var text = dashboardPage.fieldCardFromEmpty(1500, 1);
-        assertTrue("Ошибка! Произошла ошибка".contains(text));
+        var firstCardInfo = getFirstCardInfo();
+        var secondCardInfo = getSecondCardInfo();
+        var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
+        var text = transferPage.cardEmptyTransfer("1500");
+        assertEquals("Ошибка! Произошла ошибка", text);
     }
 
     @Test
     void shouldCheckIfFieldCardInvalid() {
-        var text = dashboardPage.fieldCardInvalid(1500, 1);
-        assertTrue("Ошибка! Произошла ошибка".contains(text));
+        var firstCardInfo = getFirstCardInfo();
+        var secondCardInfo = getInvalidCardInfo();
+        int amount = 1500;
+        var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
+        var text = transferPage.cardInvalidTransfer(String.valueOf(amount), secondCardInfo);
+        assertEquals("Ошибка! Произошла ошибка", text);
     }
 }

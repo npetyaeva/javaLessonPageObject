@@ -1,6 +1,9 @@
 package ru.netology.data;
 
+import com.github.javafaker.Faker;
 import lombok.Value;
+
+import java.util.Locale;
 
 public class DataHelper {
     public DataHelper() {}
@@ -26,5 +29,23 @@ public class DataHelper {
 
     public static VerificationCode getVerificationCode() {
         return new VerificationCode("12345");
+    }
+
+    @Value
+    public static class CardInfo {
+        String number;
+    }
+
+    public static CardInfo getFirstCardInfo() {
+        return new CardInfo("5559 0000 0000 0001");
+    }
+
+    public static CardInfo getSecondCardInfo() {
+        return new CardInfo("5559 0000 0000 0002");
+    }
+
+    public static CardInfo getInvalidCardInfo() {
+        Faker faker = new Faker();
+        return new CardInfo(faker.numerify("################"));
     }
 }
