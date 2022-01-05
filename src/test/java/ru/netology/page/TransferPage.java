@@ -25,10 +25,10 @@ public class TransferPage {
         return new DashboardPage();
     }
 
-    public DashboardPage amountEmptyTransfer(CardInfo cardNumber) {
+    public String amountEmptyTransfer(CardInfo cardNumber) {
         cardFromField.setValue(cardNumber.getNumber());
         transferButton.click();
-        return new DashboardPage();
+        return errorPopup.shouldBe(visible).text();
     }
 
     public String cardEmptyTransfer(String amount) {
