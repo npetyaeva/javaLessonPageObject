@@ -58,13 +58,12 @@ public class MoneyTransferTest {
         var firstCardInfo = getFirstCardInfo();
         var secondCardInfo = getSecondCardInfo();
         var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
-        var dashboardPage = transferPage.amountEmptyTransfer(secondCardInfo);
-        var text = dashboardPage.getHeader();
-        assertEquals("Ваши карты", text);
+        var text = transferPage.amountEmptyTransfer(secondCardInfo);
+        assertEquals("Ошибка! Произошла ошибка", text);
     }
 
     @Test
-    void shouldCheckIfFieldCardFromEmpty() {
+    void shouldCheckIfFieldCardEmpty() {
         var firstCardInfo = getFirstCardInfo();
         var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
         var text = transferPage.cardEmptyTransfer("1500");
